@@ -1,0 +1,24 @@
+{
+  "name": "tourze/tls-extension-naming",
+  "description": "TLS Extension Naming Package",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1",
+    "tourze/tls-common": "0.0.*"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tourze\\TLSExtensionNaming\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tourze\\TLSExtensionNaming\\Tests\\": "tests/"
+    }
+  }
+} 
