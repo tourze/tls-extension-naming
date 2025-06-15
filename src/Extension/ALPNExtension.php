@@ -31,10 +31,7 @@ class ALPNExtension extends AbstractExtension
     {
         $this->protocols = $protocols;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public static function decode(string $data): static
     {
         $offset = 0;
@@ -57,7 +54,7 @@ class ALPNExtension extends AbstractExtension
             $protocols[] = $protocol;
         }
 
-        return new static($protocols);
+        return new self($protocols);
     }
     
     /**

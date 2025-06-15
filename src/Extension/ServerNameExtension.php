@@ -28,10 +28,7 @@ class ServerNameExtension extends AbstractExtension
     {
         $this->serverNames = $serverNames;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public static function decode(string $data): static
     {
         $offset = 0;
@@ -57,7 +54,7 @@ class ServerNameExtension extends AbstractExtension
             $serverNames[$nameType] = $serverName;
         }
 
-        return new static($serverNames);
+        return new self($serverNames);
     }
     
     /**

@@ -52,17 +52,14 @@ class KeyShareExtension extends AbstractExtension
         $this->isHelloRetryRequest = $isHelloRetryRequest;
         $this->selectedGroup = $selectedGroup;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public static function decode(string $data): static
     {
         // HelloRetryRequest 格式 (只有2字节)
         if (strlen($data) === 2) {
             $offset = 0;
             $selectedGroup = self::decodeUint16($data, $offset);
-            return new static([], true, $selectedGroup);
+            return new self([], true, $selectedGroup);
         }
 
         // ClientHello/ServerHello 格式
@@ -88,7 +85,7 @@ class KeyShareExtension extends AbstractExtension
             $keyShares[] = ['group' => $group, 'key_exchange' => $keyExchange];
         }
 
-        return new static($keyShares);
+        return new self($keyShares);
     }
     
     /**

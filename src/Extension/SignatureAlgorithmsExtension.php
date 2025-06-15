@@ -38,10 +38,7 @@ class SignatureAlgorithmsExtension extends AbstractExtension
     {
         $this->algorithms = $algorithms;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public static function decode(string $data): static
     {
         $offset = 0;
@@ -56,7 +53,7 @@ class SignatureAlgorithmsExtension extends AbstractExtension
             $algorithms[] = self::decodeUint16($data, $offset);
         }
 
-        return new static($algorithms);
+        return new self($algorithms);
     }
     
     /**
