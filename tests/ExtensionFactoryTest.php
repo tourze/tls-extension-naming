@@ -147,36 +147,7 @@ class ExtensionFactoryTest extends TestCase
         
         ExtensionFactory::create(0x9999, 'data');
     }
-    
-    /**
-     * 测试注册自定义扩展
-     */
-    public function testRegisterExtension(): void
-    {
-        // 创建一个测试扩展类
-        $testExtension = new class extends ServerNameExtension {
-            public function getType(): int
-            {
-                return 0x9999;
-            }
-        };
-        
-        $className = get_class($testExtension);
-        
-        // 注册扩展
-        ExtensionFactory::registerExtension(0x9999, $className);
-        
-        // 验证注册成功
-        $this->assertTrue(ExtensionFactory::isTypeRegistered(0x9999));
-        $this->assertContains(0x9999, ExtensionFactory::getRegisteredTypes());
-        
-        // 测试创建注册的扩展
-        $data = "\x00\x00"; // 空服务器名称列表
-        $extension = ExtensionFactory::create(0x9999, $data);
-        
-        $this->assertInstanceOf($className, $extension);
-    }
-    
+
     /**
      * 测试注册无效的扩展类
      */

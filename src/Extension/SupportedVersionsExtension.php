@@ -38,10 +38,7 @@ class SupportedVersionsExtension extends AbstractExtension
         $this->versions = $versions;
         $this->isServerExtension = $isServerExtension;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public static function decode(string $data): static
     {
         $offset = 0;
@@ -51,7 +48,7 @@ class SupportedVersionsExtension extends AbstractExtension
         if (strlen($data) === 2) {
             // 服务器端扩展：只有一个版本
             $version = self::decodeUint16($data, $offset);
-            return new static([$version], true);
+            return new self([$version], true);
         }
 
         // 客户端扩展：版本列表
@@ -63,7 +60,7 @@ class SupportedVersionsExtension extends AbstractExtension
             $versions[] = self::decodeUint16($data, $offset);
         }
 
-        return new static($versions, false);
+        return new self($versions, false);
     }
     
     /**
