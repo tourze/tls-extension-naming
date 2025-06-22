@@ -157,6 +157,7 @@ class ExtensionFactoryTest extends TestCase
         $this->expectExceptionMessage('must implement');
         
         // 尝试注册一个不实现 ExtensionInterface 的类
+        /** @phpstan-ignore-next-line */
         ExtensionFactory::registerExtension(0x9998, \stdClass::class);
     }
     
@@ -167,7 +168,6 @@ class ExtensionFactoryTest extends TestCase
     {
         $types = ExtensionFactory::getRegisteredTypes();
         
-        $this->assertIsArray($types);
         $this->assertContains(ExtensionType::SERVER_NAME->value, $types);
         $this->assertContains(ExtensionType::SUPPORTED_VERSIONS->value, $types);
         $this->assertContains(ExtensionType::ALPN->value, $types);

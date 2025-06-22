@@ -13,8 +13,9 @@ class AbstractExtensionTest extends TestCase
 {
     /**
      * 测试抽象类
+     * @phpstan-var object&AbstractExtension
      */
-    private AbstractExtension $extension;
+    private object $extension;
     
     /**
      * 测试扩展接口实现
@@ -31,6 +32,7 @@ class AbstractExtensionTest extends TestCase
      */
     public function testEncodeUint16(int $value, string $expected): void
     {
+        /** @phpstan-ignore-next-line */
         $result = $this->extension->testEncodeUint16($value);
         $this->assertEquals($expected, $result);
     }
@@ -76,14 +78,17 @@ class AbstractExtensionTest extends TestCase
         $data = "\x00\x0A\x00\x0B\x00\x0C";
         $offset = 0;
 
+        /** @phpstan-ignore-next-line */
         $value1 = $this->extension::testDecodeUint16($data, $offset);
         $this->assertEquals(10, $value1);
         $this->assertEquals(2, $offset);
 
+        /** @phpstan-ignore-next-line */
         $value2 = $this->extension::testDecodeUint16($data, $offset);
         $this->assertEquals(11, $value2);
         $this->assertEquals(4, $offset);
 
+        /** @phpstan-ignore-next-line */
         $value3 = $this->extension::testDecodeUint16($data, $offset);
         $this->assertEquals(12, $value3);
         $this->assertEquals(6, $offset);
@@ -97,6 +102,7 @@ class AbstractExtensionTest extends TestCase
     public function testDecodeUint16(string $data, int $expectedValue, int $expectedOffset): void
     {
         $offset = 0;
+        /** @phpstan-ignore-next-line */
         $value = $this->extension::testDecodeUint16($data, $offset);
 
         $this->assertEquals($expectedValue, $value);
@@ -141,7 +147,7 @@ class AbstractExtensionTest extends TestCase
 
             public static function testDecodeUint16(string $data, int &$offset): int
             {
-                return self::decodeUint16($data, $offset);
+                return parent::decodeUint16($data, $offset);
             }
         };
     }

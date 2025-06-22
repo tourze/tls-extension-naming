@@ -11,21 +11,21 @@ interface ExtensionInterface
 {
     /**
      * 获取扩展类型
-     * 
+     *
      * @return int 扩展类型值
      */
     public function getType(): int;
     
     /**
      * 将扩展编码为二进制数据
-     * 
+     *
      * @return string 编码后的二进制数据
      */
     public function encode(): string;
     
     /**
      * 从二进制数据解码扩展
-     * 
+     *
      * @param string $data 二进制数据
      * @return static 解码后的扩展对象
      */
@@ -33,7 +33,7 @@ interface ExtensionInterface
     
     /**
      * 检查扩展是否适用于指定的TLS版本
-     * 
+     *
      * @param string $tlsVersion TLS版本（例如："1.2", "1.3"）
      * @return bool 是否适用
      */

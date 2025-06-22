@@ -2,13 +2,21 @@
 
 namespace Tourze\TLSExtensionNaming\Extension;
 
+use Tourze\EnumExtra\Itemable;
+use Tourze\EnumExtra\ItemTrait;
+use Tourze\EnumExtra\Labelable;
+use Tourze\EnumExtra\Selectable;
+use Tourze\EnumExtra\SelectTrait;
+
 /**
  * TLS扩展类型枚举
  * 
  * 定义了RFC规范中的TLS扩展类型常量
  */
-enum ExtensionType: int
+enum ExtensionType: int implements Itemable, Labelable, Selectable
 {
+    use ItemTrait;
+    use SelectTrait;
     /**
      * 服务器名称指示扩展
      */
@@ -160,4 +168,43 @@ enum ExtensionType: int
      * 密钥共享扩展 (TLS 1.3)
      */
     case KEY_SHARE = 0x0033;
+    
+    /**
+     * 获取扩展类型的标签
+     */
+    public function getLabel(): string
+    {
+        return match($this) {
+            self::SERVER_NAME => '服务器名称指示',
+            self::MAX_FRAGMENT_LENGTH => '最大分片长度',
+            self::CLIENT_CERTIFICATE_URL => '客户端证书URL',
+            self::TRUSTED_CA_KEYS => '受信任的CA密钥',
+            self::TRUNCATED_HMAC => '截断HMAC',
+            self::STATUS_REQUEST => '状态请求',
+            self::RENEGOTIATION_INFO => '安全重协商信息',
+            self::SUPPORTED_GROUPS => '支持的组',
+            self::EC_POINT_FORMATS => '椭圆曲线点格式',
+            self::SIGNATURE_ALGORITHMS => '签名算法',
+            self::USE_SRTP => '使用SRTP',
+            self::HEARTBEAT => '心跳',
+            self::ALPN => '应用层协议协商',
+            self::SIGNED_CERTIFICATE_TIMESTAMP => '签名证书时间戳',
+            self::CLIENT_CERTIFICATE_TYPE => '客户端证书类型',
+            self::SERVER_CERTIFICATE_TYPE => '服务器证书类型',
+            self::PADDING => '填充',
+            self::ENCRYPT_THEN_MAC => '先加密后MAC',
+            self::EXTENDED_MASTER_SECRET => '扩展主密钥',
+            self::SESSION_TICKET => '会话票据',
+            self::PRE_SHARED_KEY => '预共享密钥',
+            self::EARLY_DATA => '早期数据指示',
+            self::SUPPORTED_VERSIONS => '支持的版本',
+            self::COOKIE => 'Cookie',
+            self::PSK_KEY_EXCHANGE_MODES => 'PSK密钥交换模式',
+            self::CERTIFICATE_AUTHORITIES => '证书授权机构',
+            self::OID_FILTERS => 'OID过滤器',
+            self::POST_HANDSHAKE_AUTH => '后握手认证',
+            self::SIGNATURE_ALGORITHMS_CERT => '证书签名算法',
+            self::KEY_SHARE => '密钥共享',
+        };
+    }
 } 

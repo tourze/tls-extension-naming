@@ -24,7 +24,7 @@ class ALPNExtension extends AbstractExtension
     
     /**
      * 构造函数
-     * 
+     *
      * @param array<string> $protocols 协议列表
      */
     public function __construct(array $protocols = [])
@@ -54,7 +54,7 @@ class ALPNExtension extends AbstractExtension
             $protocols[] = $protocol;
         }
 
-        return new self($protocols);
+        return new static($protocols);
     }
     
     /**

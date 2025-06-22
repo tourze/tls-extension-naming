@@ -38,7 +38,7 @@ class KeyShareExtension extends AbstractExtension
     
     /**
      * 构造函数
-     * 
+     *
      * @param array<array{group: int, key_exchange: string}> $keyShares 密钥共享条目
      * @param bool $isHelloRetryRequest 是否为 HelloRetryRequest
      * @param int|null $selectedGroup HelloRetryRequest 中选择的组
@@ -59,7 +59,7 @@ class KeyShareExtension extends AbstractExtension
         if (strlen($data) === 2) {
             $offset = 0;
             $selectedGroup = self::decodeUint16($data, $offset);
-            return new self([], true, $selectedGroup);
+            return new static([], true, $selectedGroup);
         }
 
         // ClientHello/ServerHello 格式
@@ -85,7 +85,7 @@ class KeyShareExtension extends AbstractExtension
             $keyShares[] = ['group' => $group, 'key_exchange' => $keyExchange];
         }
 
-        return new self($keyShares);
+        return new static($keyShares);
     }
     
     /**

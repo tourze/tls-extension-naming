@@ -31,7 +31,7 @@ class SignatureAlgorithmsExtension extends AbstractExtension
     
     /**
      * 构造函数
-     * 
+     *
      * @param array<int> $algorithms 签名算法列表
      */
     public function __construct(array $algorithms = [])
@@ -53,7 +53,7 @@ class SignatureAlgorithmsExtension extends AbstractExtension
             $algorithms[] = self::decodeUint16($data, $offset);
         }
 
-        return new self($algorithms);
+        return new static($algorithms);
     }
     
     /**

@@ -19,7 +19,7 @@ class ExtensionFactory
 {
     /**
      * 扩展类型到类名的映射
-     * 
+     *
      * @var array<int, class-string<ExtensionInterface>>
      */
     protected static array $extensionMap = [
@@ -32,7 +32,7 @@ class ExtensionFactory
     
     /**
      * 注册自定义扩展类
-     * 
+     *
      * @param int $type 扩展类型
      * @param class-string<ExtensionInterface> $className 扩展类名
      */
@@ -49,7 +49,7 @@ class ExtensionFactory
     
     /**
      * 根据类型创建扩展实例
-     * 
+     *
      * @param int $type 扩展类型
      * @param string $data 扩展数据
      * @return ExtensionInterface
@@ -67,7 +67,7 @@ class ExtensionFactory
     
     /**
      * 创建服务器名称扩展
-     * 
+     *
      * @param string $serverName 服务器名称
      * @return ServerNameExtension
      */
@@ -78,7 +78,7 @@ class ExtensionFactory
     
     /**
      * 创建 ALPN 扩展
-     * 
+     *
      * @param array<string> $protocols 协议列表
      * @return ALPNExtension
      */
@@ -89,7 +89,7 @@ class ExtensionFactory
     
     /**
      * 创建支持的版本扩展
-     * 
+     *
      * @param array<int> $versions 版本列表
      * @param bool $isServer 是否为服务器端
      * @return SupportedVersionsExtension
@@ -101,7 +101,7 @@ class ExtensionFactory
     
     /**
      * 创建签名算法扩展
-     * 
+     *
      * @param array<int> $algorithms 算法列表
      * @return SignatureAlgorithmsExtension
      */
@@ -112,7 +112,7 @@ class ExtensionFactory
     
     /**
      * 创建密钥共享扩展
-     * 
+     *
      * @param array<array{group: int, key_exchange: string}> $keyShares 密钥共享列表
      * @return KeyShareExtension
      */
@@ -123,7 +123,7 @@ class ExtensionFactory
     
     /**
      * 创建 HelloRetryRequest 密钥共享扩展
-     * 
+     *
      * @param int $selectedGroup 选择的组
      * @return KeyShareExtension
      */
@@ -134,7 +134,7 @@ class ExtensionFactory
     
     /**
      * 获取已注册的扩展类型
-     * 
+     *
      * @return array<int>
      */
     public static function getRegisteredTypes(): array
@@ -144,7 +144,7 @@ class ExtensionFactory
     
     /**
      * 检查扩展类型是否已注册
-     * 
+     *
      * @param int $type 扩展类型
      * @return bool
      */

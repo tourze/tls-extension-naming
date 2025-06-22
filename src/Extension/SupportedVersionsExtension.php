@@ -29,7 +29,7 @@ class SupportedVersionsExtension extends AbstractExtension
     
     /**
      * 构造函数
-     * 
+     *
      * @param array<int> $versions 支持的版本列表
      * @param bool $isServerExtension 是否为服务器端扩展
      */
@@ -48,7 +48,7 @@ class SupportedVersionsExtension extends AbstractExtension
         if (strlen($data) === 2) {
             // 服务器端扩展：只有一个版本
             $version = self::decodeUint16($data, $offset);
-            return new self([$version], true);
+            return new static([$version], true);
         }
 
         // 客户端扩展：版本列表
@@ -60,7 +60,7 @@ class SupportedVersionsExtension extends AbstractExtension
             $versions[] = self::decodeUint16($data, $offset);
         }
 
-        return new self($versions, false);
+        return new static($versions, false);
     }
     
     /**

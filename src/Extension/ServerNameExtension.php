@@ -21,7 +21,7 @@ class ServerNameExtension extends AbstractExtension
     
     /**
      * 构造函数
-     * 
+     *
      * @param array<int, string> $serverNames 服务器名称列表
      */
     public function __construct(array $serverNames = [])
@@ -54,7 +54,7 @@ class ServerNameExtension extends AbstractExtension
             $serverNames[$nameType] = $serverName;
         }
 
-        return new self($serverNames);
+        return new static($serverNames);
     }
     
     /**
