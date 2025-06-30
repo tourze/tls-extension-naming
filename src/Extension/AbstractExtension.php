@@ -4,7 +4,7 @@ namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
  * TLS扩展抽象基类
- * 
+ *
  * 提供所有TLS扩展的基本功能
  */
 abstract class AbstractExtension implements ExtensionInterface

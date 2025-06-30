@@ -10,7 +10,7 @@ use Tourze\EnumExtra\SelectTrait;
 
 /**
  * TLS扩展类型枚举
- * 
+ *
  * 定义了RFC规范中的TLS扩展类型常量
  */
 enum ExtensionType: int implements Itemable, Labelable, Selectable

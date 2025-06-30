@@ -2,9 +2,11 @@
 
 namespace Tourze\TLSExtensionNaming\Extension;
 
+use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
+
 /**
  * 支持的版本扩展 (TLS 1.3)
- * 
+ *
  * 实现 RFC 8446 中定义的 supported_versions 扩展
  */
 class SupportedVersionsExtension extends AbstractExtension
@@ -16,17 +18,17 @@ class SupportedVersionsExtension extends AbstractExtension
     public const TLS_1_1 = 0x0302;
     public const TLS_1_2 = 0x0303;
     public const TLS_1_3 = 0x0304;
-    
+
     /**
      * @var array<int> 支持的版本列表
      */
     protected array $versions = [];
-    
+
     /**
      * @var bool 是否为服务器端扩展
      */
     protected bool $isServerExtension = false;
-    
+
     /**
      * 构造函数
      *
@@ -62,7 +64,7 @@ class SupportedVersionsExtension extends AbstractExtension
 
         return new static($versions, false);
     }
-    
+
     /**
      * 添加支持的版本
      *
@@ -76,7 +78,7 @@ class SupportedVersionsExtension extends AbstractExtension
         }
         return $this;
     }
-    
+
     /**
      * 获取支持的版本列表
      *
@@ -86,7 +88,7 @@ class SupportedVersionsExtension extends AbstractExtension
     {
         return $this->versions;
     }
-    
+
     /**
      * 是否为服务器端扩展
      *
@@ -96,7 +98,7 @@ class SupportedVersionsExtension extends AbstractExtension
     {
         return $this->isServerExtension;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -104,7 +106,7 @@ class SupportedVersionsExtension extends AbstractExtension
     {
         return ExtensionType::SUPPORTED_VERSIONS->value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -113,7 +115,7 @@ class SupportedVersionsExtension extends AbstractExtension
         if ($this->isServerExtension) {
             // 服务器端只编码一个选定的版本
             if (empty($this->versions)) {
-                throw new \RuntimeException('Server extension must have exactly one selected version');
+                throw new ExtensionEncodingException('Server extension must have exactly one selected version');
             }
             return $this->encodeUint16($this->versions[0]);
         }
@@ -127,12 +129,12 @@ class SupportedVersionsExtension extends AbstractExtension
         // 版本列表长度 (1 字节)
         $listLength = strlen($versionList);
         if ($listLength > 254) {
-            throw new \RuntimeException('Version list too long');
+            throw new ExtensionEncodingException('Version list too long');
         }
 
         return chr($listLength) . $versionList;
     }
-    
+
     /**
      * {@inheritdoc}
      */

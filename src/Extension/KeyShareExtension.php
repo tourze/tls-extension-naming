@@ -2,9 +2,11 @@
 
 namespace Tourze\TLSExtensionNaming\Extension;
 
+use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
+
 /**
  * 密钥共享扩展 (TLS 1.3)
- * 
+ *
  * 实现 RFC 8446 中定义的 key_share 扩展
  */
 class KeyShareExtension extends AbstractExtension
@@ -20,22 +22,22 @@ class KeyShareExtension extends AbstractExtension
     public const GROUP_FFDHE2048 = 0x0100;
     public const GROUP_FFDHE3072 = 0x0101;
     public const GROUP_FFDHE4096 = 0x0102;
-    
+
     /**
      * @var array<array{group: int, key_exchange: string}> 密钥共享条目
      */
     protected array $keyShares = [];
-    
+
     /**
      * @var bool 是否为 HelloRetryRequest 扩展
      */
     protected bool $isHelloRetryRequest = false;
-    
+
     /**
      * @var int|null HelloRetryRequest 中选择的组
      */
     protected ?int $selectedGroup = null;
-    
+
     /**
      * 构造函数
      *
@@ -87,7 +89,7 @@ class KeyShareExtension extends AbstractExtension
 
         return new static($keyShares);
     }
-    
+
     /**
      * 添加密钥共享
      *
@@ -100,7 +102,7 @@ class KeyShareExtension extends AbstractExtension
         $this->keyShares[] = ['group' => $group, 'key_exchange' => $keyExchange];
         return $this;
     }
-    
+
     /**
      * 获取密钥共享列表
      *
@@ -110,7 +112,7 @@ class KeyShareExtension extends AbstractExtension
     {
         return $this->keyShares;
     }
-    
+
     /**
      * 是否为 HelloRetryRequest
      *
@@ -120,7 +122,7 @@ class KeyShareExtension extends AbstractExtension
     {
         return $this->isHelloRetryRequest;
     }
-    
+
     /**
      * 获取选择的组 (HelloRetryRequest)
      *
@@ -130,7 +132,7 @@ class KeyShareExtension extends AbstractExtension
     {
         return $this->selectedGroup;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -138,7 +140,7 @@ class KeyShareExtension extends AbstractExtension
     {
         return ExtensionType::KEY_SHARE->value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -147,7 +149,7 @@ class KeyShareExtension extends AbstractExtension
         // HelloRetryRequest 格式
         if ($this->isHelloRetryRequest) {
             if ($this->selectedGroup === null) {
-                throw new \RuntimeException('HelloRetryRequest must have a selected group');
+                throw new ExtensionEncodingException('HelloRetryRequest must have a selected group');
             }
             return $this->encodeUint16($this->selectedGroup);
         }
@@ -172,7 +174,7 @@ class KeyShareExtension extends AbstractExtension
 
         return $this->encodeUint16($listLength) . $keyShareList;
     }
-    
+
     /**
      * {@inheritdoc}
      */

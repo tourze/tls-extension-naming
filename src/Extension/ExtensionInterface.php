@@ -4,7 +4,7 @@ namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
  * TLS扩展接口
- * 
+ *
  * 所有TLS扩展必须实现此接口
  */
 interface ExtensionInterface

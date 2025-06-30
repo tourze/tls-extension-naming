@@ -4,7 +4,7 @@ namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
  * 服务器名称指示 (SNI) 扩展
- * 
+ *
  * 实现 RFC 6066 中定义的 server_name 扩展
  */
 class ServerNameExtension extends AbstractExtension

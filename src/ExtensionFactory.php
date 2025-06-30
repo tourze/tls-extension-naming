@@ -2,6 +2,8 @@
 
 namespace Tourze\TLSExtensionNaming;
 
+use Tourze\TLSExtensionNaming\Exception\InvalidExtensionException;
+use Tourze\TLSExtensionNaming\Exception\UnknownExtensionTypeException;
 use Tourze\TLSExtensionNaming\Extension\ALPNExtension;
 use Tourze\TLSExtensionNaming\Extension\ExtensionInterface;
 use Tourze\TLSExtensionNaming\Extension\ExtensionType;
@@ -12,7 +14,7 @@ use Tourze\TLSExtensionNaming\Extension\SupportedVersionsExtension;
 
 /**
  * TLS 扩展工厂类
- * 
+ *
  * 提供创建和解析 TLS 扩展的便捷方法
  */
 class ExtensionFactory
@@ -29,7 +31,7 @@ class ExtensionFactory
         ExtensionType::SIGNATURE_ALGORITHMS->value => SignatureAlgorithmsExtension::class,
         ExtensionType::KEY_SHARE->value => KeyShareExtension::class,
     ];
-    
+
     /**
      * 注册自定义扩展类
      *
@@ -39,14 +41,14 @@ class ExtensionFactory
     public static function registerExtension(int $type, string $className): void
     {
         if (!is_subclass_of($className, ExtensionInterface::class)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidExtensionException(
                 sprintf('Class %s must implement %s', $className, ExtensionInterface::class)
             );
         }
-        
+
         self::$extensionMap[$type] = $className;
     }
-    
+
     /**
      * 根据类型创建扩展实例
      *
@@ -58,13 +60,13 @@ class ExtensionFactory
     public static function create(int $type, string $data): ExtensionInterface
     {
         if (!isset(self::$extensionMap[$type])) {
-            throw new \RuntimeException(sprintf('Unknown extension type: 0x%04X', $type));
+            throw new UnknownExtensionTypeException(sprintf('Unknown extension type: 0x%04X', $type));
         }
-        
+
         $className = self::$extensionMap[$type];
         return $className::decode($data);
     }
-    
+
     /**
      * 创建服务器名称扩展
      *
@@ -75,7 +77,7 @@ class ExtensionFactory
     {
         return (new ServerNameExtension())->addServerName($serverName);
     }
-    
+
     /**
      * 创建 ALPN 扩展
      *
@@ -86,7 +88,7 @@ class ExtensionFactory
     {
         return new ALPNExtension($protocols);
     }
-    
+
     /**
      * 创建支持的版本扩展
      *
@@ -98,7 +100,7 @@ class ExtensionFactory
     {
         return new SupportedVersionsExtension($versions, $isServer);
     }
-    
+
     /**
      * 创建签名算法扩展
      *
@@ -109,7 +111,7 @@ class ExtensionFactory
     {
         return new SignatureAlgorithmsExtension($algorithms);
     }
-    
+
     /**
      * 创建密钥共享扩展
      *
@@ -120,7 +122,7 @@ class ExtensionFactory
     {
         return new KeyShareExtension($keyShares);
     }
-    
+
     /**
      * 创建 HelloRetryRequest 密钥共享扩展
      *
@@ -131,7 +133,7 @@ class ExtensionFactory
     {
         return new KeyShareExtension([], true, $selectedGroup);
     }
-    
+
     /**
      * 获取已注册的扩展类型
      *
@@ -141,7 +143,7 @@ class ExtensionFactory
     {
         return array_keys(self::$extensionMap);
     }
-    
+
     /**
      * 检查扩展类型是否已注册
      *

@@ -4,7 +4,7 @@ namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
  * 签名算法扩展
- * 
+ *
  * 实现 RFC 8446 中定义的 signature_algorithms 扩展
  */
 class SignatureAlgorithmsExtension extends AbstractExtension

@@ -2,9 +2,11 @@
 
 namespace Tourze\TLSExtensionNaming\Extension;
 
+use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
+
 /**
  * 应用层协议协商 (ALPN) 扩展
- * 
+ *
  * 实现 RFC 7301 中定义的 ALPN 扩展
  */
 class ALPNExtension extends AbstractExtension
@@ -16,12 +18,12 @@ class ALPNExtension extends AbstractExtension
     public const PROTOCOL_HTTP_2 = 'h2';
     public const PROTOCOL_HTTP_3 = 'h3';
     public const PROTOCOL_SPDY_3_1 = 'spdy/3.1';
-    
+
     /**
      * @var array<string> 协议列表
      */
     protected array $protocols = [];
-    
+
     /**
      * 构造函数
      *
@@ -56,7 +58,7 @@ class ALPNExtension extends AbstractExtension
 
         return new static($protocols);
     }
-    
+
     /**
      * 添加协议
      *
@@ -70,7 +72,7 @@ class ALPNExtension extends AbstractExtension
         }
         return $this;
     }
-    
+
     /**
      * 获取协议列表
      *
@@ -80,7 +82,7 @@ class ALPNExtension extends AbstractExtension
     {
         return $this->protocols;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -88,7 +90,7 @@ class ALPNExtension extends AbstractExtension
     {
         return ExtensionType::ALPN->value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -99,7 +101,7 @@ class ALPNExtension extends AbstractExtension
         foreach ($this->protocols as $protocol) {
             $protocolLength = strlen($protocol);
             if ($protocolLength > 255) {
-                throw new \RuntimeException('Protocol name too long');
+                throw new ExtensionEncodingException('Protocol name too long');
             }
 
             // 协议长度 (1 字节) + 协议名称

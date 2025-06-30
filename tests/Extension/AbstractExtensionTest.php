@@ -42,7 +42,7 @@ class AbstractExtensionTest extends TestCase
      *
      * @return array<array{int, string}>
      */
-    public function uint16Provider(): array
+    public static function uint16Provider(): array
     {
         return [
             [0, "\x00\x00"],
@@ -58,7 +58,7 @@ class AbstractExtensionTest extends TestCase
      *
      * @return array<array{string, int, int}>
      */
-    public function uint16DecodeProvider(): array
+    public static function uint16DecodeProvider(): array
     {
         return [
             ["\x00\x00", 0, 2],
