@@ -1,10 +1,12 @@
 <?php
 
-namespace Tourze\TLSExtensionNaming\Exception;
+declare(strict_types=1);
 
-use RuntimeException;
+namespace Tourze\TLSExtensionNaming\Exception;
 
 /**
  * TLS 扩展异常基类
  */
-class TLSExtensionException extends RuntimeException {}
+abstract class TLSExtensionException extends \RuntimeException
+{
+}

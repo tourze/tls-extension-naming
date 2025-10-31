@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
@@ -7,7 +9,7 @@ namespace Tourze\TLSExtensionNaming\Extension;
  *
  * 实现 RFC 8446 中定义的 signature_algorithms 扩展
  */
-class SignatureAlgorithmsExtension extends AbstractExtension
+final class SignatureAlgorithmsExtension extends AbstractExtension
 {
     /**
      * 签名算法常量
@@ -23,12 +25,12 @@ class SignatureAlgorithmsExtension extends AbstractExtension
     public const RSA_PSS_RSAE_SHA512 = 0x0806;
     public const ED25519 = 0x0807;
     public const ED448 = 0x0808;
-    
+
     /**
      * @var array<int> 签名算法列表
      */
     protected array $algorithms = [];
-    
+
     /**
      * 构造函数
      *
@@ -45,31 +47,32 @@ class SignatureAlgorithmsExtension extends AbstractExtension
         $algorithms = [];
 
         // 解码算法列表长度
-        $listLength = self::decodeUint16($data, $offset);
+        [$listLength, $offset] = self::decodeUint16($data, $offset);
         $endOffset = $offset + $listLength;
 
         // 解码算法列表
         while ($offset < $endOffset) {
-            $algorithms[] = self::decodeUint16($data, $offset);
+            [$algorithm, $offset] = self::decodeUint16($data, $offset);
+            $algorithms[] = $algorithm;
         }
 
-        return new static($algorithms);
+        return new self($algorithms);
     }
-    
+
     /**
      * 添加签名算法
      *
      * @param int $algorithm 签名算法
-     * @return self
      */
     public function addAlgorithm(int $algorithm): self
     {
         if (!in_array($algorithm, $this->algorithms, true)) {
             $this->algorithms[] = $algorithm;
         }
+
         return $this;
     }
-    
+
     /**
      * 获取签名算法列表
      *
@@ -79,18 +82,12 @@ class SignatureAlgorithmsExtension extends AbstractExtension
     {
         return $this->algorithms;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public function getType(): int
     {
         return ExtensionType::SIGNATURE_ALGORITHMS->value;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public function encode(): string
     {
         $algorithmList = '';

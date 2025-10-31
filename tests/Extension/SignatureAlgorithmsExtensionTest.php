@@ -2,14 +2,18 @@
 
 namespace Tourze\TLSExtensionNaming\Tests\Extension;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\TLSExtensionNaming\Extension\ExtensionType;
 use Tourze\TLSExtensionNaming\Extension\SignatureAlgorithmsExtension;
 
 /**
  * SignatureAlgorithmsExtension 测试类
+ *
+ * @internal
  */
-class SignatureAlgorithmsExtensionTest extends TestCase
+#[CoversClass(SignatureAlgorithmsExtension::class)]
+final class SignatureAlgorithmsExtensionTest extends TestCase
 {
     /**
      * 测试默认构造函数
@@ -27,7 +31,7 @@ class SignatureAlgorithmsExtensionTest extends TestCase
     {
         $algorithms = [
             SignatureAlgorithmsExtension::RSA_PKCS1_SHA256,
-            SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256
+            SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256,
         ];
 
         $extension = new SignatureAlgorithmsExtension($algorithms);
@@ -47,7 +51,7 @@ class SignatureAlgorithmsExtensionTest extends TestCase
         $extension->addAlgorithm(SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256);
         $this->assertEquals([
             SignatureAlgorithmsExtension::RSA_PKCS1_SHA256,
-            SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256
+            SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256,
         ], $extension->getAlgorithms());
     }
 
@@ -73,7 +77,8 @@ class SignatureAlgorithmsExtensionTest extends TestCase
         $extension = new SignatureAlgorithmsExtension();
 
         $result = $extension->addAlgorithm(SignatureAlgorithmsExtension::RSA_PKCS1_SHA256)
-            ->addAlgorithm(SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256);
+            ->addAlgorithm(SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256)
+        ;
 
         $this->assertSame($extension, $result);
     }
@@ -124,7 +129,8 @@ class SignatureAlgorithmsExtensionTest extends TestCase
         $extension = new SignatureAlgorithmsExtension();
         $extension->addAlgorithm(SignatureAlgorithmsExtension::RSA_PKCS1_SHA256)
             ->addAlgorithm(SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256)
-            ->addAlgorithm(SignatureAlgorithmsExtension::RSA_PSS_RSAE_SHA256);
+            ->addAlgorithm(SignatureAlgorithmsExtension::RSA_PSS_RSAE_SHA256)
+        ;
 
         $encoded = $extension->encode();
 
@@ -176,7 +182,7 @@ class SignatureAlgorithmsExtensionTest extends TestCase
         $this->assertEquals([
             SignatureAlgorithmsExtension::RSA_PKCS1_SHA256,
             SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256,
-            SignatureAlgorithmsExtension::RSA_PSS_RSAE_SHA256
+            SignatureAlgorithmsExtension::RSA_PSS_RSAE_SHA256,
         ], $extension->getAlgorithms());
     }
 
@@ -189,7 +195,7 @@ class SignatureAlgorithmsExtensionTest extends TestCase
             SignatureAlgorithmsExtension::RSA_PKCS1_SHA256,
             SignatureAlgorithmsExtension::ECDSA_SECP256R1_SHA256,
             SignatureAlgorithmsExtension::RSA_PSS_RSAE_SHA256,
-            SignatureAlgorithmsExtension::ED25519
+            SignatureAlgorithmsExtension::ED25519,
         ];
 
         $original = new SignatureAlgorithmsExtension($originalAlgorithms);

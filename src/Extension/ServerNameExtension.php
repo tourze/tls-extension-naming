@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Extension;
 
 /**
@@ -7,18 +9,18 @@ namespace Tourze\TLSExtensionNaming\Extension;
  *
  * 实现 RFC 6066 中定义的 server_name 扩展
  */
-class ServerNameExtension extends AbstractExtension
+final class ServerNameExtension extends AbstractExtension
 {
     /**
      * 服务器名称类型：主机名
      */
     public const NAME_TYPE_HOST_NAME = 0;
-    
+
     /**
      * @var array<int, string> 服务器名称列表
      */
     protected array $serverNames = [];
-    
+
     /**
      * 构造函数
      *
@@ -35,17 +37,17 @@ class ServerNameExtension extends AbstractExtension
         $serverNames = [];
 
         // 解码服务器名称列表长度
-        $listLength = self::decodeUint16($data, $offset);
+        [$listLength, $offset] = self::decodeUint16($data, $offset);
         $endOffset = $offset + $listLength;
 
         // 解码服务器名称列表
         while ($offset < $endOffset) {
             // 名称类型
             $nameType = ord($data[$offset]);
-            $offset++;
+            ++$offset;
 
             // 服务器名称长度
-            $nameLength = self::decodeUint16($data, $offset);
+            [$nameLength, $offset] = self::decodeUint16($data, $offset);
 
             // 服务器名称
             $serverName = substr($data, $offset, $nameLength);
@@ -54,22 +56,22 @@ class ServerNameExtension extends AbstractExtension
             $serverNames[$nameType] = $serverName;
         }
 
-        return new static($serverNames);
+        return new self($serverNames);
     }
-    
+
     /**
      * 添加服务器名称
      *
      * @param string $serverName 服务器名称
-     * @param int $nameType 名称类型
-     * @return self
+     * @param int    $nameType   名称类型
      */
     public function addServerName(string $serverName, int $nameType = self::NAME_TYPE_HOST_NAME): self
     {
         $this->serverNames[$nameType] = $serverName;
+
         return $this;
     }
-    
+
     /**
      * 获取服务器名称列表
      *
@@ -79,18 +81,12 @@ class ServerNameExtension extends AbstractExtension
     {
         return $this->serverNames;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public function getType(): int
     {
         return ExtensionType::SERVER_NAME->value;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public function encode(): string
     {
         $serverNameList = '';

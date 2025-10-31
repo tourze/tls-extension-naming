@@ -2,6 +2,7 @@
 
 namespace Tourze\TLSExtensionNaming\Tests\Extension;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
 use Tourze\TLSExtensionNaming\Extension\ExtensionType;
@@ -9,8 +10,11 @@ use Tourze\TLSExtensionNaming\Extension\KeyShareExtension;
 
 /**
  * KeyShareExtension 测试类
+ *
+ * @internal
  */
-class KeyShareExtensionTest extends TestCase
+#[CoversClass(KeyShareExtension::class)]
+final class KeyShareExtensionTest extends TestCase
 {
     /**
      * 测试默认构造函数
@@ -30,7 +34,7 @@ class KeyShareExtensionTest extends TestCase
     {
         $keyShares = [
             ['group' => KeyShareExtension::GROUP_X25519, 'key_exchange' => 'test_key_1'],
-            ['group' => KeyShareExtension::GROUP_SECP256R1, 'key_exchange' => 'test_key_2']
+            ['group' => KeyShareExtension::GROUP_SECP256R1, 'key_exchange' => 'test_key_2'],
         ];
 
         $extension = new KeyShareExtension($keyShares);
@@ -82,7 +86,8 @@ class KeyShareExtensionTest extends TestCase
         $extension = new KeyShareExtension();
 
         $result = $extension->addKeyShare(KeyShareExtension::GROUP_X25519, 'key1')
-            ->addKeyShare(KeyShareExtension::GROUP_SECP256R1, 'key2');
+            ->addKeyShare(KeyShareExtension::GROUP_SECP256R1, 'key2')
+        ;
 
         $this->assertSame($extension, $result);
     }
@@ -122,7 +127,7 @@ class KeyShareExtensionTest extends TestCase
         $expected = "\x00\x07" .           // 列表长度 (7 bytes)
             "\x00\x1D" .           // 组 (X25519 = 0x001D)
             "\x00\x03" .           // 密钥长度 (3 bytes)
-            "key";                 // 密钥数据
+            'key';                 // 密钥数据
 
         $this->assertEquals($expected, $encoded);
     }
@@ -134,16 +139,17 @@ class KeyShareExtensionTest extends TestCase
     {
         $extension = new KeyShareExtension();
         $extension->addKeyShare(KeyShareExtension::GROUP_X25519, 'key1')
-            ->addKeyShare(KeyShareExtension::GROUP_SECP256R1, 'key2');
+            ->addKeyShare(KeyShareExtension::GROUP_SECP256R1, 'key2')
+        ;
 
         $encoded = $extension->encode();
 
         // 验证编码格式
         $expected = "\x00\x10" .           // 列表长度 (16 bytes)
             "\x00\x1D" .           // X25519
-            "\x00\x04" . "key1" .  // 密钥1
+            "\x00\x04" . 'key1' .  // 密钥1
             "\x00\x17" .           // SECP256R1
-            "\x00\x04" . "key2";   // 密钥2
+            "\x00\x04" . 'key2';   // 密钥2
 
         $this->assertEquals($expected, $encoded);
     }
@@ -197,7 +203,7 @@ class KeyShareExtensionTest extends TestCase
         $data = "\x00\x07" .           // 列表长度
             "\x00\x1D" .           // X25519
             "\x00\x03" .           // 密钥长度
-            "key";                 // 密钥数据
+            'key';                 // 密钥数据
 
         $extension = KeyShareExtension::decode($data);
         $keyShares = $extension->getKeyShares();
@@ -214,9 +220,9 @@ class KeyShareExtensionTest extends TestCase
     {
         $data = "\x00\x10" .           // 列表长度
             "\x00\x1D" .           // X25519
-            "\x00\x04" . "key1" .  // 密钥1
+            "\x00\x04" . 'key1' .  // 密钥1
             "\x00\x17" .           // SECP256R1
-            "\x00\x04" . "key2";   // 密钥2
+            "\x00\x04" . 'key2';   // 密钥2
 
         $extension = KeyShareExtension::decode($data);
         $keyShares = $extension->getKeyShares();
@@ -248,7 +254,7 @@ class KeyShareExtensionTest extends TestCase
     {
         $originalKeyShares = [
             ['group' => KeyShareExtension::GROUP_X25519, 'key_exchange' => 'test_key_1'],
-            ['group' => KeyShareExtension::GROUP_SECP256R1, 'key_exchange' => 'test_key_2']
+            ['group' => KeyShareExtension::GROUP_SECP256R1, 'key_exchange' => 'test_key_2'],
         ];
 
         $original = new KeyShareExtension($originalKeyShares);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Exception;
 
 /**
@@ -7,4 +9,6 @@ namespace Tourze\TLSExtensionNaming\Exception;
  *
  * 当扩展编码过程中出现错误时抛出
  */
-class ExtensionEncodingException extends TLSExtensionException {}
+class ExtensionEncodingException extends TLSExtensionException
+{
+}

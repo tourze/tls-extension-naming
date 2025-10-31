@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Extension;
 
 use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
@@ -9,7 +11,7 @@ use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
  *
  * 实现 RFC 8446 中定义的 key_share 扩展
  */
-class KeyShareExtension extends AbstractExtension
+final class KeyShareExtension extends AbstractExtension
 {
     /**
      * 命名组常量 (Named Groups)
@@ -41,14 +43,14 @@ class KeyShareExtension extends AbstractExtension
     /**
      * 构造函数
      *
-     * @param array<array{group: int, key_exchange: string}> $keyShares 密钥共享条目
-     * @param bool $isHelloRetryRequest 是否为 HelloRetryRequest
-     * @param int|null $selectedGroup HelloRetryRequest 中选择的组
+     * @param array<array{group: int, key_exchange: string}> $keyShares           密钥共享条目
+     * @param bool                                           $isHelloRetryRequest 是否为 HelloRetryRequest
+     * @param int|null                                       $selectedGroup       HelloRetryRequest 中选择的组
      */
     public function __construct(
         array $keyShares = [],
         bool $isHelloRetryRequest = false,
-        ?int $selectedGroup = null
+        ?int $selectedGroup = null,
     ) {
         $this->keyShares = $keyShares;
         $this->isHelloRetryRequest = $isHelloRetryRequest;
@@ -58,10 +60,11 @@ class KeyShareExtension extends AbstractExtension
     public static function decode(string $data): static
     {
         // HelloRetryRequest 格式 (只有2字节)
-        if (strlen($data) === 2) {
+        if (2 === strlen($data)) {
             $offset = 0;
-            $selectedGroup = self::decodeUint16($data, $offset);
-            return new static([], true, $selectedGroup);
+            [$selectedGroup, $offset] = self::decodeUint16($data, $offset);
+
+            return new self([], true, $selectedGroup);
         }
 
         // ClientHello/ServerHello 格式
@@ -69,16 +72,16 @@ class KeyShareExtension extends AbstractExtension
         $keyShares = [];
 
         // 解码密钥共享列表长度
-        $listLength = self::decodeUint16($data, $offset);
+        [$listLength, $offset] = self::decodeUint16($data, $offset);
         $endOffset = $offset + $listLength;
 
         // 解码密钥共享列表
         while ($offset < $endOffset) {
             // 组
-            $group = self::decodeUint16($data, $offset);
+            [$group, $offset] = self::decodeUint16($data, $offset);
 
             // 密钥交换数据长度
-            $keyExchangeLength = self::decodeUint16($data, $offset);
+            [$keyExchangeLength, $offset] = self::decodeUint16($data, $offset);
 
             // 密钥交换数据
             $keyExchange = substr($data, $offset, $keyExchangeLength);
@@ -87,19 +90,19 @@ class KeyShareExtension extends AbstractExtension
             $keyShares[] = ['group' => $group, 'key_exchange' => $keyExchange];
         }
 
-        return new static($keyShares);
+        return new self($keyShares);
     }
 
     /**
      * 添加密钥共享
      *
-     * @param int $group 命名组
+     * @param int    $group       命名组
      * @param string $keyExchange 密钥交换数据
-     * @return self
      */
     public function addKeyShare(int $group, string $keyExchange): self
     {
         $this->keyShares[] = ['group' => $group, 'key_exchange' => $keyExchange];
+
         return $this;
     }
 
@@ -115,8 +118,6 @@ class KeyShareExtension extends AbstractExtension
 
     /**
      * 是否为 HelloRetryRequest
-     *
-     * @return bool
      */
     public function isHelloRetryRequest(): bool
     {
@@ -125,32 +126,25 @@ class KeyShareExtension extends AbstractExtension
 
     /**
      * 获取选择的组 (HelloRetryRequest)
-     *
-     * @return int|null
      */
     public function getSelectedGroup(): ?int
     {
         return $this->selectedGroup;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(): int
     {
         return ExtensionType::KEY_SHARE->value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function encode(): string
     {
         // HelloRetryRequest 格式
         if ($this->isHelloRetryRequest) {
-            if ($this->selectedGroup === null) {
+            if (null === $this->selectedGroup) {
                 throw new ExtensionEncodingException('HelloRetryRequest must have a selected group');
             }
+
             return $this->encodeUint16($this->selectedGroup);
         }
 
@@ -175,9 +169,6 @@ class KeyShareExtension extends AbstractExtension
         return $this->encodeUint16($listLength) . $keyShareList;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isApplicableForVersion(string $tlsVersion): bool
     {
         // 此扩展仅适用于 TLS 1.3 及以上版本

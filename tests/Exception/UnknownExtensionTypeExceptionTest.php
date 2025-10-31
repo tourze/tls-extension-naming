@@ -1,15 +1,19 @@
 <?php
 
-namespace Tourze\TLSExtensionNaming\Tests\Unit\Exception;
+namespace Tourze\TLSExtensionNaming\Tests\Exception;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitBase\AbstractExceptionTestCase;
 use Tourze\TLSExtensionNaming\Exception\TLSExtensionException;
 use Tourze\TLSExtensionNaming\Exception\UnknownExtensionTypeException;
 
 /**
  * UnknownExtensionTypeException 测试类
+ *
+ * @internal
  */
-class UnknownExtensionTypeExceptionTest extends TestCase
+#[CoversClass(UnknownExtensionTypeException::class)]
+final class UnknownExtensionTypeExceptionTest extends AbstractExceptionTestCase
 {
     /**
      * 测试异常继承关系

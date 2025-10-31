@@ -1,14 +1,18 @@
 <?php
 
-namespace Tourze\TLSExtensionNaming\Tests\Unit\Extension;
+namespace Tourze\TLSExtensionNaming\Tests\Extension;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\TLSExtensionNaming\Extension\ExtensionInterface;
 
 /**
  * ExtensionInterface 测试类
+ *
+ * @internal
  */
-class ExtensionInterfaceTest extends TestCase
+#[CoversClass(ExtensionInterface::class)]
+final class ExtensionInterfaceTest extends TestCase
 {
     /**
      * 测试接口方法定义
@@ -16,7 +20,7 @@ class ExtensionInterfaceTest extends TestCase
     public function testInterfaceMethods(): void
     {
         $methods = get_class_methods(ExtensionInterface::class);
-        
+
         $this->assertContains('getType', $methods);
         $this->assertContains('encode', $methods);
         $this->assertContains('decode', $methods);
@@ -41,7 +45,7 @@ class ExtensionInterfaceTest extends TestCase
 
             public static function decode(string $data): static
             {
-                return new static();
+                return new self();
             }
 
             public function isApplicableForVersion(string $tlsVersion): bool
@@ -54,7 +58,7 @@ class ExtensionInterfaceTest extends TestCase
         $this->assertEquals(0x0000, $extension->getType());
         $this->assertEquals('test', $extension->encode());
         $this->assertTrue($extension->isApplicableForVersion('1.3'));
-        
+
         $decoded = $extension::decode('data');
         $this->assertInstanceOf(ExtensionInterface::class, $decoded);
     }
@@ -66,15 +70,15 @@ class ExtensionInterfaceTest extends TestCase
     {
         $reflectionClass = new \ReflectionClass(ExtensionInterface::class);
         $methods = $reflectionClass->getMethods();
-        
+
         $staticMethodFound = false;
         foreach ($methods as $method) {
-            if ($method->getName() === 'decode' && $method->isStatic()) {
+            if ('decode' === $method->getName() && $method->isStatic()) {
                 $staticMethodFound = true;
                 break;
             }
         }
-        
+
         $this->assertTrue($staticMethodFound, 'decode method should be static');
     }
 }

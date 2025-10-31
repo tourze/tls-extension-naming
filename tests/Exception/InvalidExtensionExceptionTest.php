@@ -1,15 +1,18 @@
 <?php
 
-namespace Tourze\TLSExtensionNaming\Tests\Unit\Exception;
+namespace Tourze\TLSExtensionNaming\Tests\Exception;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitBase\AbstractExceptionTestCase;
 use Tourze\TLSExtensionNaming\Exception\InvalidExtensionException;
 
 /**
  * InvalidExtensionException 测试类
+ *
+ * @internal
  */
-class InvalidExtensionExceptionTest extends TestCase
+#[CoversClass(InvalidExtensionException::class)]
+final class InvalidExtensionExceptionTest extends AbstractExceptionTestCase
 {
     /**
      * 测试异常继承关系
@@ -17,7 +20,7 @@ class InvalidExtensionExceptionTest extends TestCase
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = new InvalidExtensionException('Invalid extension');
-        $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+        $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
     }
 
     /**

@@ -1,23 +1,26 @@
 <?php
 
-namespace Tourze\TLSExtensionNaming\Tests\Unit\Exception;
+namespace Tourze\TLSExtensionNaming\Tests\Exception;
 
-use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitBase\AbstractExceptionTestCase;
 use Tourze\TLSExtensionNaming\Exception\TLSExtensionException;
 
 /**
  * TLSExtensionException 测试类
+ *
+ * @internal
  */
-class TLSExtensionExceptionTest extends TestCase
+#[CoversClass(TLSExtensionException::class)]
+final class TLSExtensionExceptionTest extends AbstractExceptionTestCase
 {
     /**
      * 测试异常是RuntimeException的子类
      */
     public function testExtendsRuntimeException(): void
     {
-        $exception = new TLSExtensionException('Test message');
-        $this->assertInstanceOf(RuntimeException::class, $exception);
+        $exception = new class('Test message') extends TLSExtensionException {};
+        $this->assertInstanceOf(\RuntimeException::class, $exception);
     }
 
     /**
@@ -26,7 +29,7 @@ class TLSExtensionExceptionTest extends TestCase
     public function testExceptionMessage(): void
     {
         $message = 'Test exception message';
-        $exception = new TLSExtensionException($message);
+        $exception = new class($message) extends TLSExtensionException {};
         $this->assertEquals($message, $exception->getMessage());
     }
 
@@ -36,7 +39,7 @@ class TLSExtensionExceptionTest extends TestCase
     public function testExceptionCode(): void
     {
         $code = 123;
-        $exception = new TLSExtensionException('Test', $code);
+        $exception = new class('Test', $code) extends TLSExtensionException {};
         $this->assertEquals($code, $exception->getCode());
     }
 
@@ -46,7 +49,7 @@ class TLSExtensionExceptionTest extends TestCase
     public function testExceptionChaining(): void
     {
         $previous = new \Exception('Previous exception');
-        $exception = new TLSExtensionException('Test', 0, $previous);
+        $exception = new class('Test', 0, $previous) extends TLSExtensionException {};
         $this->assertSame($previous, $exception->getPrevious());
     }
 }

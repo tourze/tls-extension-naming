@@ -2,6 +2,7 @@
 
 namespace Tourze\TLSExtensionNaming\Tests\Extension;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
 use Tourze\TLSExtensionNaming\Extension\ALPNExtension;
@@ -9,8 +10,11 @@ use Tourze\TLSExtensionNaming\Extension\ExtensionType;
 
 /**
  * ALPNExtension 测试类
+ *
+ * @internal
  */
-class ALPNExtensionTest extends TestCase
+#[CoversClass(ALPNExtension::class)]
+final class ALPNExtensionTest extends TestCase
 {
     /**
      * 测试默认构造函数
@@ -28,7 +32,7 @@ class ALPNExtensionTest extends TestCase
     {
         $protocols = [
             ALPNExtension::PROTOCOL_HTTP_2,
-            ALPNExtension::PROTOCOL_HTTP_1_1
+            ALPNExtension::PROTOCOL_HTTP_1_1,
         ];
 
         $extension = new ALPNExtension($protocols);
@@ -48,7 +52,7 @@ class ALPNExtensionTest extends TestCase
         $extension->addProtocol(ALPNExtension::PROTOCOL_HTTP_1_1);
         $this->assertEquals([
             ALPNExtension::PROTOCOL_HTTP_2,
-            ALPNExtension::PROTOCOL_HTTP_1_1
+            ALPNExtension::PROTOCOL_HTTP_1_1,
         ], $extension->getProtocols());
     }
 
@@ -74,7 +78,8 @@ class ALPNExtensionTest extends TestCase
         $extension = new ALPNExtension();
 
         $result = $extension->addProtocol(ALPNExtension::PROTOCOL_HTTP_2)
-            ->addProtocol(ALPNExtension::PROTOCOL_HTTP_1_1);
+            ->addProtocol(ALPNExtension::PROTOCOL_HTTP_1_1)
+        ;
 
         $this->assertSame($extension, $result);
     }
@@ -113,7 +118,7 @@ class ALPNExtensionTest extends TestCase
         // 验证编码格式
         $expected = "\x00\x03" . // 列表长度 (3 bytes)
             "\x02" .      // 协议长度 (2 bytes)
-            "h2";         // 协议名称
+            'h2';         // 协议名称
 
         $this->assertEquals($expected, $encoded);
     }
@@ -126,15 +131,16 @@ class ALPNExtensionTest extends TestCase
         $extension = new ALPNExtension();
         $extension->addProtocol('h2')
             ->addProtocol('http/1.1')
-            ->addProtocol('h3');
+            ->addProtocol('h3')
+        ;
 
         $encoded = $extension->encode();
 
         // 验证编码格式
         $expected = "\x00\x0F" .   // 列表长度 (15 bytes)
-            "\x02" . "h2" . // h2: 长度2 + 内容
-            "\x08" . "http/1.1" . // http/1.1: 长度8 + 内容
-            "\x02" . "h3";  // h3: 长度2 + 内容
+            "\x02" . 'h2' . // h2: 长度2 + 内容
+            "\x08" . 'http/1.1' . // http/1.1: 长度8 + 内容
+            "\x02" . 'h3';  // h3: 长度2 + 内容
 
         $this->assertEquals($expected, $encoded);
     }
@@ -173,7 +179,7 @@ class ALPNExtensionTest extends TestCase
     {
         $data = "\x00\x03" . // 列表长度
             "\x02" .      // 协议长度
-            "h2";         // 协议名称
+            'h2';         // 协议名称
 
         $extension = ALPNExtension::decode($data);
 
@@ -186,9 +192,9 @@ class ALPNExtensionTest extends TestCase
     public function testDecodeMultipleProtocols(): void
     {
         $data = "\x00\x0F" .        // 列表长度
-            "\x02" . "h2" .      // h2
-            "\x08" . "http/1.1" . // http/1.1
-            "\x02" . "h3";       // h3
+            "\x02" . 'h2' .      // h2
+            "\x08" . 'http/1.1' . // http/1.1
+            "\x02" . 'h3';       // h3
 
         $extension = ALPNExtension::decode($data);
 
@@ -204,7 +210,7 @@ class ALPNExtensionTest extends TestCase
             ALPNExtension::PROTOCOL_HTTP_2,
             ALPNExtension::PROTOCOL_HTTP_1_1,
             ALPNExtension::PROTOCOL_HTTP_3,
-            ALPNExtension::PROTOCOL_SPDY_3_1
+            ALPNExtension::PROTOCOL_SPDY_3_1,
         ]);
 
         $encoded = $original->encode();
@@ -221,7 +227,7 @@ class ALPNExtensionTest extends TestCase
         $customProtocols = [
             'custom-protocol-1',
             'my-app-protocol/v2',
-            'test'
+            'test',
         ];
 
         $extension = new ALPNExtension($customProtocols);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Extension;
 
 use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
@@ -9,7 +11,7 @@ use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
  *
  * 实现 RFC 7301 中定义的 ALPN 扩展
  */
-class ALPNExtension extends AbstractExtension
+final class ALPNExtension extends AbstractExtension
 {
     /**
      * 常见的 ALPN 协议标识符
@@ -40,14 +42,14 @@ class ALPNExtension extends AbstractExtension
         $protocols = [];
 
         // 解码协议列表长度
-        $listLength = self::decodeUint16($data, $offset);
+        [$listLength, $offset] = self::decodeUint16($data, $offset);
         $endOffset = $offset + $listLength;
 
         // 解码协议列表
         while ($offset < $endOffset) {
             // 协议长度
             $protocolLength = ord($data[$offset]);
-            $offset++;
+            ++$offset;
 
             // 协议名称
             $protocol = substr($data, $offset, $protocolLength);
@@ -56,20 +58,20 @@ class ALPNExtension extends AbstractExtension
             $protocols[] = $protocol;
         }
 
-        return new static($protocols);
+        return new self($protocols);
     }
 
     /**
      * 添加协议
      *
      * @param string $protocol 协议标识符
-     * @return self
      */
     public function addProtocol(string $protocol): self
     {
         if (!in_array($protocol, $this->protocols, true)) {
             $this->protocols[] = $protocol;
         }
+
         return $this;
     }
 
@@ -83,17 +85,11 @@ class ALPNExtension extends AbstractExtension
         return $this->protocols;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(): int
     {
         return ExtensionType::ALPN->value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function encode(): string
     {
         $protocolList = '';

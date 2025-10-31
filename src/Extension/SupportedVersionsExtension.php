@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\TLSExtensionNaming\Extension;
 
 use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
@@ -9,7 +11,7 @@ use Tourze\TLSExtensionNaming\Exception\ExtensionEncodingException;
  *
  * 实现 RFC 8446 中定义的 supported_versions 扩展
  */
-class SupportedVersionsExtension extends AbstractExtension
+final class SupportedVersionsExtension extends AbstractExtension
 {
     /**
      * TLS 版本常量
@@ -32,8 +34,8 @@ class SupportedVersionsExtension extends AbstractExtension
     /**
      * 构造函数
      *
-     * @param array<int> $versions 支持的版本列表
-     * @param bool $isServerExtension 是否为服务器端扩展
+     * @param array<int> $versions          支持的版本列表
+     * @param bool       $isServerExtension 是否为服务器端扩展
      */
     public function __construct(array $versions = [], bool $isServerExtension = false)
     {
@@ -47,35 +49,37 @@ class SupportedVersionsExtension extends AbstractExtension
         $versions = [];
 
         // 检查是服务器端还是客户端扩展
-        if (strlen($data) === 2) {
+        if (2 === strlen($data)) {
             // 服务器端扩展：只有一个版本
-            $version = self::decodeUint16($data, $offset);
-            return new static([$version], true);
+            [$version, $offset] = self::decodeUint16($data, $offset);
+
+            return new self([$version], true);
         }
 
         // 客户端扩展：版本列表
         $listLength = ord($data[$offset]);
-        $offset++;
+        ++$offset;
 
         $endOffset = $offset + $listLength;
         while ($offset < $endOffset) {
-            $versions[] = self::decodeUint16($data, $offset);
+            [$version, $offset] = self::decodeUint16($data, $offset);
+            $versions[] = $version;
         }
 
-        return new static($versions, false);
+        return new self($versions, false);
     }
 
     /**
      * 添加支持的版本
      *
      * @param int $version TLS版本
-     * @return self
      */
     public function addVersion(int $version): self
     {
         if (!in_array($version, $this->versions, true)) {
             $this->versions[] = $version;
         }
+
         return $this;
     }
 
@@ -91,32 +95,25 @@ class SupportedVersionsExtension extends AbstractExtension
 
     /**
      * 是否为服务器端扩展
-     *
-     * @return bool
      */
     public function isServerExtension(): bool
     {
         return $this->isServerExtension;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(): int
     {
         return ExtensionType::SUPPORTED_VERSIONS->value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function encode(): string
     {
         if ($this->isServerExtension) {
             // 服务器端只编码一个选定的版本
-            if (empty($this->versions)) {
+            if (0 === count($this->versions)) {
                 throw new ExtensionEncodingException('Server extension must have exactly one selected version');
             }
+
             return $this->encodeUint16($this->versions[0]);
         }
 
@@ -135,9 +132,6 @@ class SupportedVersionsExtension extends AbstractExtension
         return chr($listLength) . $versionList;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isApplicableForVersion(string $tlsVersion): bool
     {
         // 此扩展仅适用于 TLS 1.3 及以上版本
